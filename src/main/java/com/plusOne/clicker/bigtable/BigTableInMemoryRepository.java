@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.LongAdder;
 
 @Component
-public class BigTableInMemory implements BigTableStore {
+public class BigTableInMemoryRepository implements BigTableRepository {
 
     private final ConcurrentHashMap<MetricKey, Counters> counters =
             new ConcurrentHashMap<>();

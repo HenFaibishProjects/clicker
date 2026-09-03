@@ -1,9 +1,10 @@
 package com.plusOne.clicker.subscribers;
 
+import com.plusOne.clicker.bigquery.BigQueryRepository;
 import com.plusOne.clicker.domain.AdEvent;
 import com.plusOne.clicker.messaging.InMemoryPubSub;
 import com.plusOne.clicker.metrics.MetricsAggregator;
-import com.plusOne.clicker.redis.RedisStore;
+import com.plusOne.clicker.redis.ProcessedEventRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import org.slf4j.Logger;
@@ -20,14 +21,23 @@ public class EventSubscriber {
             LoggerFactory.getLogger(EventSubscriber.class);
 
     private final MetricsAggregator metricsAggregator;
+    private final BigQueryRepository bigQueryRepository;
     private final InMemoryPubSub pubSub;
-    private final RedisStore redisStore;
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private final ProcessedEventRepository processedEventRepository;
 
-    public EventSubscriber(MetricsAggregator metricsAggregator, InMemoryPubSub pubSub, RedisStore redisStore) {
+    private final ExecutorService executor =
+            Executors.newSingleThreadExecutor();
+
+    public EventSubscriber(
+            MetricsAggregator metricsAggregator,
+            BigQueryRepository bigQueryRepository,
+            InMemoryPubSub pubSub,
+            ProcessedEventRepository processedEventRepository) {
+
         this.metricsAggregator = metricsAggregator;
+        this.bigQueryRepository = bigQueryRepository;
         this.pubSub = pubSub;
-        this.redisStore = redisStore;
+        this.processedEventRepository = processedEventRepository;
     }
 
     @PostConstruct
@@ -36,30 +46,57 @@ public class EventSubscriber {
     }
 
     private void listen() {
+
         while (!Thread.currentThread().isInterrupted()) {
+
             try {
                 AdEvent event = pubSub.consume();
-                boolean isNewEvent = redisStore.markIfNew(event.eventId());
-
-                if (!isNewEvent) {
-                    log.info(
-                            "[component=EventSubscriber][action=ignoreDuplicate] eventId={}",
-                            event.eventId()
-                    );
-                    continue;
-                }
-
                 log.info(
-                        "[component=EventSubscriber][action=receiveEvent] eventId={} type={}",
+                        "[component=EventSubscriber][action=consume] eventId={} type={}",
                         event.eventId(),
                         event.type()
                 );
-
-            metricsAggregator.aggregate(event);
+                processEvent(event);
 
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
+        }
+    }
+
+    private void processEvent(AdEvent event) {
+
+        boolean claimed =
+                processedEventRepository.tryClaim(event.eventId());
+
+        if (!claimed) {
+            log.info(
+                    "[component=EventSubscriber][action=ignoreDuplicate] eventId={}",
+                    event.eventId()
+            );
+            return;
+        }
+
+        try {
+            log.info(
+                    "[component=EventSubscriber][action=processEvent] eventId={} type={}",
+                    event.eventId(),
+                    event.type()
+            );
+
+            bigQueryRepository.save(event);
+            metricsAggregator.aggregate(event);
+
+        } catch (Exception e) {
+
+            processedEventRepository.release(event.eventId());
+
+            log.error(
+                    "[component=EventSubscriber][action=processEventFailed] eventId={} type={}",
+                    event.eventId(),
+                    event.type(),
+                    e
+            );
         }
     }
 

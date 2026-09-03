@@ -1,3 +1,5 @@
 spring:
   application:
     name: clicker
+deduplication:
+  ttl: 24h

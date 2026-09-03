@@ -1,16 +1,21 @@
 package com.plusOne.clicker.metrics;
 
-import com.plusOne.clicker.bigtable.BigTableStore;
+import com.plusOne.clicker.bigtable.BigTableRepository;
 import com.plusOne.clicker.domain.AdEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MetricsAggregator {
 
-    private final BigTableStore bigTableStore;
+    private final BigTableRepository bigTableRepository;
 
-    public MetricsAggregator(BigTableStore bigTableStore) {
-        this.bigTableStore = bigTableStore;
+    private static final Logger log =
+            LoggerFactory.getLogger(MetricsAggregator.class);
+
+    public MetricsAggregator(BigTableRepository bigTableRepository) {
+        this.bigTableRepository = bigTableRepository;
     }
 
     public void aggregate(AdEvent event) {
@@ -20,6 +25,13 @@ public class MetricsAggregator {
                 event.adId()
         );
 
-        bigTableStore.increment(key, event.type());
+        log.info(
+                "[component=MetricsAggregator][action=aggregate] campaignId={} adId={} type={}",
+                event.campaignId(),
+                event.adId(),
+                event.type()
+        );
+
+        bigTableRepository.increment(key, event.type());
     }
 }
