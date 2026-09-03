@@ -1,6 +1,6 @@
 package com.plusOne.clicker.subscribers;
 
-import com.plusOne.clicker.bigquery.BigQueryRepository;
+import com.plusOne.clicker.repositories.BigQueryRepository;
 import com.plusOne.clicker.domain.AdEvent;
 import com.plusOne.clicker.domain.EventType;
 import com.plusOne.clicker.messaging.InMemoryPubSub;

@@ -1,5 +1,6 @@
-package com.plusOne.clicker.bigtable;
+package com.plusOne.clicker.repositories;
 
+import com.plusOne.clicker.bigtable.MetricsSnapshot;
 import com.plusOne.clicker.domain.EventType;
 import com.plusOne.clicker.metrics.MetricKey;
 

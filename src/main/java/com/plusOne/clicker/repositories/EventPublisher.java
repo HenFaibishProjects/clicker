@@ -1,4 +1,4 @@
-package com.plusOne.clicker.publishers;
+package com.plusOne.clicker.repositories;
 
 import com.plusOne.clicker.domain.AdEvent;
 

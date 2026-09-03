@@ -3,7 +3,7 @@ package com.plusOne.clicker.services;
 import com.plusOne.clicker.domain.AdEvent;
 import com.plusOne.clicker.domain.EventType;
 import com.plusOne.clicker.mappers.AdEventMapper;
-import com.plusOne.clicker.publishers.EventPublisher;
+import com.plusOne.clicker.repositories.EventPublisher;
 import com.plusOne.clicker.requests.AdEventRequest;
 import org.junit.jupiter.api.Test;
 

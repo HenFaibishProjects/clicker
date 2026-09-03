@@ -1,6 +1,6 @@
 package com.plusOne.clicker.metrics;
 
-import com.plusOne.clicker.bigtable.BigTableRepository;
+import com.plusOne.clicker.repositories.BigTableRepository;
 import com.plusOne.clicker.domain.AdEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

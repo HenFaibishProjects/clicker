@@ -1,6 +1,7 @@
 package com.plusOne.clicker.bigquery;
 
 import com.plusOne.clicker.domain.AdEvent;
+import com.plusOne.clicker.repositories.BigQueryRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -25,10 +26,5 @@ public class BigQueryInMemoryRepository implements BigQueryRepository {
                 event.eventId(),
                 event.type()
         );
-    }
-
-    @Override
-    public List<AdEvent> findAll() {
-        return List.copyOf(events);
     }
 }

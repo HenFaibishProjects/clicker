@@ -1,6 +1,6 @@
 package com.plusOne.clicker.services;
 
-import com.plusOne.clicker.bigtable.BigTableRepository;
+import com.plusOne.clicker.repositories.BigTableRepository;
 import com.plusOne.clicker.bigtable.MetricsSnapshot;
 import com.plusOne.clicker.metrics.MetricKey;
 import com.plusOne.clicker.response.MetricsResponse;

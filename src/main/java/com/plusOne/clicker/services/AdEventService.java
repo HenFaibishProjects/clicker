@@ -2,7 +2,7 @@ package com.plusOne.clicker.services;
 
 import com.plusOne.clicker.domain.AdEvent;
 import com.plusOne.clicker.mappers.AdEventMapper;
-import com.plusOne.clicker.publishers.EventPublisher;
+import com.plusOne.clicker.repositories.EventPublisher;
 import com.plusOne.clicker.requests.AdEventRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

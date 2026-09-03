@@ -2,6 +2,7 @@ package com.plusOne.clicker.publishers;
 
 import com.plusOne.clicker.domain.AdEvent;
 import com.plusOne.clicker.messaging.InMemoryPubSub;
+import com.plusOne.clicker.repositories.EventPublisher;
 import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
